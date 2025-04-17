@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Joke Generator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #e8f5e9;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .joke-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            font-family: 'Comic Neue', cursive;
+            font-weight: 700;
+            color: #2e7d32;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+
+        .joke-display {
+            margin: 20px 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-size: 1.2em;
+        }
+
+        .controls {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            margin: 0 10px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .category-selector {
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        select {
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            font-size: 1em;
+        }
+
+        .navigation {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .navigation a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .navigation a:hover {
+            text-decoration: underline;
+        }
+
+        .emoji-container {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 50px;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .emoji-animation {
+            animation: fadeInOut 2s ease-in-out;
+        }
+
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translateY(20px); }
+            20% { opacity: 1; transform: translateY(0); }
+            80% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-20px); }
+        }
+    </style>
+</head>
+<body>
+    <div class="joke-container">
+        <h1>Joke Generator</h1>
+        
+        <div class="category-selector">
+            <label for="joke-category">Select Joke Category:</label>
+            <select id="joke-category">
+                <option value="dad">Dad Jokes</option>
+                <option value="pun">Pun Jokes</option>
+                <option value="knock">Knock-Knock Jokes</option>
+            </select>
+        </div>
+
+        <div class="joke-display" id="joke-display">
+            Click "Generate Joke" to get started!
+        </div>
+
+        <div class="controls">
+            <button onclick="generateJoke()">Generate Joke</button>
+            <button onclick="saveFavorite()">Save Favorite</button>
+        </div>
+
+        <div id="favorites" style="margin-top: 20px;">
+            <h3>Favorite Jokes</h3>
+            <ul id="favorites-list"></ul>
+        </div>
+
+        <!-- Add emoji container under favorites -->
+        <div id="emoji-container" class="emoji-container">😂</div>
+
+        <div class="navigation">
+            <a href="scratch.html">← Back to Soccer Simulator</a>
+        </div>
+    </div>
+
+    <script>
+        const jokes = {
+            dad: [
+                "Why don't skeletons fight each other? They don't have the guts.",
+                "I'm reading a book about anti-gravity. It's impossible to put down!",
+                "Why did the scarecrow win an award? Because he was outstanding in his field!",
+                "What do you call a fake noodle? An impasta!",
+                "Why did the math book look sad? Because it had too many problems."
+            ],
+            pun: [
+                "I used to be a baker, but I couldn't make enough dough.",
+                "I'm on a seafood diet. I see food and I eat it.",
+                "I told my wife she was drawing her eyebrows too high. She looked surprised.",
+                "I'm reading a book about mazes. I got lost in it.",
+                "I used to be a baker, but I couldn't make enough dough."
+            ],
+            knock: [
+                "Knock knock. Who's there? Boo. Boo who? Don't cry, it's just a joke!",
+                "Knock knock. Who's there? Lettuce. Lettuce who? Lettuce in, it's cold out here!",
+                "Knock knock. Who's there? Tank. Tank who? You're welcome!",
+                "Knock knock. Who's there? Alpaca. Alpaca who? Alpaca the suitcase, you load up the car!",
+                "Knock knock. Who's there? Olive. Olive who? Olive you and I miss you!"
+            ]
+        };
+
+        let favorites = [];
+
+        function generateJoke() {
+            const category = document.getElementById('joke-category').value;
+            const jokeList = jokes[category];
+            const randomIndex = Math.floor(Math.random() * jokeList.length);
+            document.getElementById('joke-display').textContent = jokeList[randomIndex];
+        }
+
+        function showEmoji() {
+            const emojiContainer = document.getElementById('emoji-container');
+            emojiContainer.classList.remove('emoji-animation');
+            // Trigger reflow
+            void emojiContainer.offsetWidth;
+            emojiContainer.classList.add('emoji-animation');
+        }
+
+        function saveFavorite() {
+            const currentJoke = document.getElementById('joke-display').textContent;
+            if (currentJoke && !favorites.includes(currentJoke)) {
+                favorites.push(currentJoke);
+                updateFavoritesList();
+                showEmoji(); // Show the laughing emoji animation
+            }
+        }
+
+        function updateFavoritesList() {
+            const favoritesList = document.getElementById('favorites-list');
+            favoritesList.innerHTML = '';
+            favorites.forEach(joke => {
+                const li = document.createElement('li');
+                li.textContent = joke;
+                favoritesList.appendChild(li);
+            });
+        }
+    </script>
+</body>
+</html>
